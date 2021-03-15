@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comsang.mapper.DoctorMapper">
+    <select id="doctorlogin" resultType="comsang.bean.Doctor">
+        select * from doctor WHERE doctor_number=#{doctorNumber}
+    </select>
+    <select id="selectDoctor" resultType="comsang.bean.Doctor">
+        SELECT
+        *
+        FROM
+        doctor d
+        INNER JOIN aoto a ON d.aoto_id=a.aoto_id
+        where d.aoto_id=#{aotoId}
+    </select>
+
+    <select id="getDoctor" resultType="comsang.bean.Doctor">
+        SELECT * from doctor where doctor_id=#{doctorId}
+    </select>
+
+</mapper>

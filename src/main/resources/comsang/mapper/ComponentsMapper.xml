@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comsang.mapper.ComponentsMapper">
+    <resultMap id="SelectOrganizations" type="comsang.bean.Components">
+        <id column="components_id" property="componentsId"/>
+        <result column="components_name" property="componentsName"/>
+        <result column="organization_id" property="organizationId"></result>
+        <result column="network_id" property="networkId"></result>
+        <result column="domain_name" property="domainName"></result>
+        <result column="type" property="type"></result>
+        <result column="port" property="port"></result>
+        <result column="ip" property="ip"></result>
+        <result column="health_check_port" property="healthCheckPort"></result>
+    </resultMap>
+
+    <select id="selectComponents" resultMap="SelectOrganizations">
+        select c.*,o.organization_id as Oid,o.organization_name
+        from organization o
+        INNER JOIN components c on c.organization_id=o.organization_id
+    </select>
+</mapper>

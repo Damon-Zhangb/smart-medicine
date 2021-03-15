@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comsang.mapper.ReservationMapper">
+    <resultMap id="selectReservas" type="comsang.bean.Reservation">
+        <id property="reservationId" column="reservation_id"></id>
+        <result property="reservationId" column="reservation_id"></result>
+        <result property="patientId" column="patient_id"></result>
+        <result property="doctorId" column="doctor_id"></result>
+        <result property="aotoId" column="aoto_id"></result>
+        <result property="reservationTime" column="reservation_time"></result>
+        <result property="cost" column="cost"></result>
+        <result property="reservationStatus" column="reservation_status"></result>
+        <result property="reservationNumber" column="reservation_number"></result>
+        <result property="authorizationCode" column="authorization_code"></result>
+        <result property="codeState" column="code_state"></result>
+        <result property="userName" column="user_name"></result>
+        <result property="doctorName" column="doctor_name"></result>
+        <result property="aotoName" column="aoto_name"></result>
+        <result property="reservationSex" column="user_sex"></result>
+        <result property="gender" column="gender"></result>
+    </resultMap>
+
+    <insert id="insertReservation" useGeneratedKeys="true" keyProperty="resId">
+        INSERT INTO reservation
+        (reservation_id,patient_id,doctor_id,aoto_id,reservation_time,cost,authorization_code,code_state,`reservation_status`,reservation_number
+        )
+        VALUES
+        (
+        NULL,#{patientId},#{doctorId},#{aotoId},#{reservationTime},#{cost},#{authorizationCode},#{codeState},#{reservationStatus},#{reservationNumber})
+    </insert>
+
+    <select id="num" resultType="Integer">
+        select COUNT(1) from reservation WHERE doctor_id=#{doctorId}
+    </select>
+
+    <select id="selectReserv" resultMap="selectReservas">
+        SELECT
+        r.reservation_id,
+        r.doctor_id,
+        r.patient_id,
+        i.`user_name` AS user_name,
+        a.aoto_name AS aoto_name,
+        i.`user_sex`,
+        r.cost,
+        r.`reservation_status`,
+        r.reservation_number,
+        r.authorization_code,
+        r.code_state
+        FROM
+        reservation r
+        INNER JOIN doctor d ON r.doctor_id = d.doctor_id
+        INNER JOIN information i ON i.user_id = r.patient_id
+        INNER JOIN aoto a ON a.aoto_id = r.aoto_id
+        WHERE r.doctor_id=#{doctorId}
+        LIMIT #{dq},#{count}
+    </select>
+    <select id="selectResInoform" resultMap="selectReservas">
+        SELECT
+        r.reservation_id,
+        r.patient_id,
+        r.doctor_id,
+        a.aoto_name AS aoto_name,
+        d.doctor_name as doctor_name,
+        d.gender,
+        r.cost,
+        r.`reservation_status`,
+        r.reservation_number,
+        r.authorization_code,
+        r.code_state
+        FROM
+        reservation r
+        INNER JOIN doctor d ON r.doctor_id = d.doctor_id
+        INNER JOIN information i ON i.user_id = r.patient_id
+        INNER JOIN aoto a ON a.aoto_id = r.aoto_id
+        WHERE r.patient_id=#{patientId}
+        LIMIT #{dq},#{count}
+    </select>
+    <update id="updateCodesate" parameterType="comsang.bean.Reservation">
+        UPDATE reservation
+        SET code_state=#{codeState}
+        WHERE reservation_id= #{reservationId}
+    </update>
+    <update id="updatesate" parameterType="comsang.bean.Reservation">
+        UPDATE reservation
+        SET reservation_status=#{reservationStatus}
+        WHERE reservation_id= #{reservationId}
+    </update>
+
+</mapper>

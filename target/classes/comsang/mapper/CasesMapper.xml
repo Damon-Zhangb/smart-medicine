@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comsang.mapper.CasesMapper">
+    <resultMap id="chaCases" type="comsang.bean.Cases">
+        <id property="caseId" column="cases_id"></id>
+        <result property="department" column="department"></result>
+        <result property="time" column="time"></result>
+        <result property="hospital" column="hospital"></result>
+        <result property="aotoId" column="aoto_id"></result>
+        <result property="oddNumbers" column="odd_numbers"></result>
+        <result property="mainSuit" column="main_suit"></result>
+        <result property="informationId" column="information_id"></result>
+        <result property="illnessHistory" column="illness_history"></result>
+        <result property="family" column="family"></result>
+        <result property="build" column="build"></result>
+        <result property="assist" column="assist"></result>
+        <result property="medicine" column="medicine"></result>
+        <result property="tcms" column="tcms"></result>
+        <association property="info" javaType="comsang.bean.Information">
+            <id property="userId" column="information_id"></id>
+            <result property="userName" column="user_name"></result>
+            <result property="userSex" column="user_sex"></result>
+            <result property="age" column="age"></result>
+        </association>
+    </resultMap>
+
+
+    <insert id="insertCases" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO view_cases ( cases_id, time, hospital, aoto_id,department,odd_numbers, main_suit,
+        information_id,doctor_id,illness_history, family, build, assist, medicine, tcms )
+        VALUES
+        (
+        NULL,#{time},#{hospital},#{aotoId},#{department},#{oddNumbers},#{mainSuit},#{informationId},#{doctorId},#{illnessHistory},#{family},#{build},#{assist},#{medicine},#{tcms})
+    </insert>
+
+
+    <select id="selectCases" resultMap="chaCases">
+        SELECT
+        v.cases_id,
+        v.department,
+        v.`time`,
+        v.hospital,
+        v.aoto_id,
+        i.`user_name`,
+        i.`user_sex`,
+        i.age,
+        v.odd_numbers,
+        v.information_id,
+        v.main_suit,
+        v.illness_history,
+        v.family,
+        v.build,
+        v.assist,
+        v.medicine,
+        v.tcms
+        FROM
+        view_cases v
+        INNER JOIN information i ON v.information_id = i.user_id
+        WHERE
+        v.`time` BETWEEN #{start} AND #{end}
+        AND v.information_id=#{userId}
+    </select>
+
+    <select id="selectByInId" resultType="comsang.bean.Generation">
+        SELECT *
+        FROM generation g
+        INNER JOIN view_cases v on v.cases_id=g.to_id
+        WHERE v.information_id = #{userId}
+    </select>
+
+    <select id="selectByToId" resultType="comsang.bean.Cases">
+        select v.doctor_id
+        from generation g
+        INNER JOIN view_cases v on v.cases_id = g.to_id
+        where to_id = #{toId}
+    </select>
+
+</mapper>
